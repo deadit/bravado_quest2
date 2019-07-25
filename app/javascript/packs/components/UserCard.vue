@@ -23,7 +23,7 @@ export default {
       type: Object,
       required: true
     },
-    query: {
+    highlightText: {
       type: String,
       required: true
     }
@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     highlight(text) {
-      return text.replace(new RegExp(this.query, "gi"), match => {
+      return text.replace(new RegExp(this.highlightText, "gi"), match => {
         return '<span style="background-color: yellow">' + match + "</span>";
       });
     }

@@ -1,14 +1,7 @@
 <template>
   <div class="searchbox">
     <div class="form">
-      <input
-        id="input"
-        v-model="inputValue"
-        class="input"
-        type="text"
-        :disabled="isFetchingUsers === true"
-        @input="searchUser"
-      />
+      <input id="input" v-model="inputValue" class="input" type="text" @input="searchUser" />
     </div>
     <div
       v-infinite-scroll="addUsersIntoScrollList"
@@ -22,7 +15,7 @@
         v-for="(user, indx) of lazyList"
         :key="`${indx}${user.name}`"
         :user="user"
-        :query="inputValue"
+        :highlight-text="highlightText"
       ></UserCard>
     </div>
   </div>
@@ -43,11 +36,11 @@ export default {
   data: function() {
     return {
       inputValue: this.$route.params.id || "",
-      isFetchingUsers: false,
       users: [],
       lazyList: [],
       page: 0,
-      order: 20
+      order: 20,
+      highlightText: this.inputValue
     };
   },
   computed: {
@@ -90,6 +83,10 @@ export default {
       this.lazyList = this.lazyList.concat(append);
       this.page += 1;
       this.busy = false;
+      this.updateHighlightText();
+    },
+    updateHighlightText() {
+      this.highlightText = this.inputValue;
     }
   }
 };
