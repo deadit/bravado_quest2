@@ -6,18 +6,25 @@
     <div
       v-infinite-scroll="addUsersIntoScrollList"
       class="users"
+      :class="{ 'd-block': !usersLoading }"
       infinite-scroll-disabled="busy"
       infinite-scroll-distance="500"
       infinite-scroll-immediate-check="true"
       style="overflow-y: scroll"
     >
-      <UserCard
-        v-for="(user, indx) of scrollList"
-        :key="`${indx}${user.name}`"
-        :user="user"
-        :highlight-text="highlightText"
-      ></UserCard>
+      <template v-if="scrollList.length !== 0">
+        <UserCard
+          v-for="(user, indx) of scrollList"
+          :key="`${indx}${user.name}`"
+          :user="user"
+          :highlight-text="highlightText"
+        ></UserCard>
+      </template>
+      <template v-else>
+        No matches for <b>{{ inputValue }}</b> string
+      </template>
     </div>
+    <div class="loader" :class="{ 'd-block': usersLoading }"><PulseLoader></PulseLoader></div>
   </div>
 </template>
 <script>
@@ -26,17 +33,20 @@ import debounce from "lodash/debounce";
 import omit from "lodash/omit";
 import filter from "lodash/filter";
 import infiniteScroll from "vue-infinite-scroll";
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 
 export default {
   name: "SearchBox",
   directives: { infiniteScroll },
   components: {
-    UserCard
+    UserCard,
+    PulseLoader
   },
   data: function() {
     return {
       inputValue: this.$route.params.id || "",
       users: [],
+      usersLoading: false,
       scrollList: [],
       page: 0,
       order: 20,
@@ -53,8 +63,10 @@ export default {
   },
   methods: {
     async getUsers() {
+      this.usersLoading = true;
       const users = await fetch("/users").then(data => data.json());
       this.updateUsers(users);
+      this.usersLoading = false;
     },
     updateUsers(users) {
       if (this.inputValue.trim() === "") {
@@ -134,8 +146,65 @@ export default {
 }
 
 .users {
-  height: 100%;
+  height: 0;
   padding-top: 20px;
   padding-right: 1rem;
+  display: none;
+
+  &.d-block {
+    display: block;
+    -webkit-animation: animateCard 0.75s;
+    animation: animateCard 0.75s;
+    height: auto;
+  }
+}
+
+.loader {
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  display: none;
+
+  &.d-block {
+    display: flex;
+    -webkit-animation: animateLoader 0.5s;
+    animation: animateLoader 0.5s;
+  }
+}
+
+@-webkit-keyframes animateCard {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes animateCard {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes animateLoader {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes animateLoader {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 </style>
