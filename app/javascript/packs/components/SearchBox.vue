@@ -3,20 +3,23 @@
     <div class="form">
       <input v-model="inputValue" class="input" type="text" @input="searchUser" />
     </div>
-    <div
-      v-infinite-scroll="addUsersIntoScrollList"
-      class="users"
-      infinite-scroll-disabled="busy"
-      infinite-scroll-distance="500"
-      infinite-scroll-immediate-check="true"
-      style="overflow-y: scroll"
-    >
-      <UserCard
-        v-for="(user, indx) of lazyList"
-        :key="indx"
-        :user="user"
-        :query="inputValue"
-      ></UserCard>
+    <div v-bar class="custom-scroll-container">
+      <div
+        v-infinite-scroll="addUsersIntoScrollList"
+        class="users-container"
+        infinite-scroll-disabled="busy"
+        infinite-scroll-distance="500"
+        infinite-scroll-immediate-check="true"
+      >
+        <div class="users">
+          <UserCard
+            v-for="(user, indx) of lazyList"
+            :key="indx"
+            :user="user"
+            :query="inputValue"
+          ></UserCard>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -125,9 +128,12 @@ export default {
   padding-left: 50px;
 }
 
+.custom-scroll-container {
+  margin-top: 20px;
+}
+
 .users {
   height: 100%;
   padding-right: 1rem;
-  padding-top: 20px;
 }
 </style>

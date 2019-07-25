@@ -12,7 +12,8 @@
     "vue": "^2.6.10",
     "vue-infinite-scroll": "^2.0.2",
     "vue-loader": "^15.7.1",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "vuebar": "^0.0.20"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.4.4",
