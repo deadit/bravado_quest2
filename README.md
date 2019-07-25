@@ -4,6 +4,7 @@ You are suggested to implement a simple profile search application using Rails, 
 
 ## Layout design
 
+
 Can be found here: https://www.figma.com/file/PyncPYa1rpOxRooTdfvgxHRN/Bravado-Quest
 
 ![Image of Layout](https://s3.amazonaws.com/bravado-images-production/Desktop.png)
