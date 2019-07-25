@@ -12,7 +12,7 @@
       style="overflow-y: scroll"
     >
       <UserCard
-        v-for="(user, indx) of lazyList"
+        v-for="(user, indx) of scrollList"
         :key="`${indx}${user.name}`"
         :user="user"
         :highlight-text="highlightText"
@@ -37,7 +37,7 @@ export default {
     return {
       inputValue: this.$route.params.id || "",
       users: [],
-      lazyList: [],
+      scrollList: [],
       page: 0,
       order: 20,
       highlightText: this.inputValue
@@ -53,9 +53,7 @@ export default {
   },
   methods: {
     async getUsers() {
-      this.isFetchingUsers = true;
       const users = await fetch("/users").then(data => data.json());
-      this.isFetchingUsers = false;
       this.updateUsers(users);
     },
     updateUsers(users) {
@@ -65,7 +63,7 @@ export default {
         this.users = filter(users, this.checkUser);
       }
       this.page = 0;
-      this.lazyList = [];
+      this.scrollList = [];
 
       this.updateHighlightText();
       this.addUsersIntoScrollList();
@@ -81,7 +79,7 @@ export default {
       const order = 20;
       this.busy = true;
       const append = [...this.users].splice(this.page * order, order);
-      this.lazyList = this.lazyList.concat(append);
+      this.scrollList = this.scrollList.concat(append);
       this.page += 1;
       this.busy = false;
     },
