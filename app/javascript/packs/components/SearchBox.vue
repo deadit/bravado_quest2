@@ -1,14 +1,7 @@
 <template>
   <div class="searchbox">
     <div class="form">
-      <input
-        id="input"
-        v-model="inputValue"
-        class="input"
-        type="text"
-        autofocus="true"
-        @input="searchUser"
-      />
+      <input v-model="inputValue" class="input" type="text" autofocus="true" @input="searchUser" />
     </div>
     <div
       v-infinite-scroll="addUsersIntoScrollList"
@@ -24,11 +17,11 @@
           v-for="(user, indx) of scrollList"
           :key="`${indx}${user.name}`"
           :user="user"
-          :highlight-text="highlightText"
+          :highlight-text="queryText"
         ></UserCard>
       </template>
       <template v-else>
-        No matches for <b>{{ inputValue }}</b> string
+        No matches for <b>{{ queryText }}</b> string
       </template>
     </div>
     <div class="loader" :class="{ 'd-block': usersLoading }"><PulseLoader></PulseLoader></div>
@@ -51,14 +44,13 @@ export default {
   },
   data: function() {
     return {
-      isFetching: false,
       inputValue: this.$route.params.id || "",
       users: [],
       usersLoading: false,
       scrollList: [],
       page: 0,
       order: 20,
-      highlightText: this.inputValue
+      queryText: this.inputValue
     };
   },
   computed: {
@@ -85,7 +77,7 @@ export default {
       this.page = 0;
       this.scrollList = [];
 
-      this.updateHighlightText();
+      this.updateQueryText();
       this.addUsersIntoScrollList();
     },
     checkUser(user) {
@@ -103,8 +95,8 @@ export default {
       this.page += 1;
       this.busy = false;
     },
-    updateHighlightText() {
-      this.highlightText = this.inputValue;
+    updateQueryText() {
+      this.queryText = this.inputValue;
     }
   }
 };
