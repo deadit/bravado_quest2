@@ -55,12 +55,11 @@ export default {
   border: 1px solid transparent;
 
   &.marked {
-    box-sizing: border-box;
     border-radius: 3px;
     border: 1px solid #4765ff;
 
     .info {
-      border-bottom: none;
+      border-bottom: 1px solid transparent;
     }
   }
 
