@@ -1,17 +1,12 @@
 <template>
   <div class="container">
-    <SearchBox></SearchBox>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import SearchBox from "./components/SearchBox.vue";
-
 export default {
-  name: "App",
-  components: {
-    SearchBox
-  }
+  name: "App"
 };
 </script>
 

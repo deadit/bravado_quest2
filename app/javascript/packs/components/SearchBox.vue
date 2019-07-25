@@ -1,7 +1,14 @@
 <template>
   <div class="searchbox">
     <div class="form">
-      <input v-model="inputValue" class="input" type="text" @input="searchUser" />
+      <input
+        id="input"
+        v-model="inputValue"
+        class="input"
+        type="text"
+        :disabled="isFetchingUsers === true"
+        @input="searchUser"
+      />
     </div>
     <div
       v-infinite-scroll="addUsersIntoScrollList"
@@ -23,6 +30,7 @@
 <script>
 import UserCard from "./UserCard.vue";
 import debounce from "lodash/debounce";
+import omit from "lodash/omit";
 import filter from "lodash/filter";
 import infiniteScroll from "vue-infinite-scroll";
 
@@ -34,7 +42,8 @@ export default {
   },
   data: function() {
     return {
-      inputValue: "",
+      inputValue: this.$route.params.id || "",
+      isFetchingUsers: false,
       users: [],
       lazyList: [],
       page: 0,
@@ -51,7 +60,9 @@ export default {
   },
   methods: {
     async getUsers() {
+      this.isFetchingUsers = true;
       const users = await fetch("/users").then(data => data.json());
+      this.isFetchingUsers = false;
       this.filterUsers(users);
     },
     filterUsers(users) {
@@ -66,7 +77,7 @@ export default {
       this.addUsersIntoScrollList();
     },
     checkUser(user) {
-      return filter(user, userValue =>
+      return filter(omit(user, ["avatar"]), userValue =>
         userValue.toLowerCase().includes(this.inputValue.toLowerCase())
       ).length !== 0
         ? true

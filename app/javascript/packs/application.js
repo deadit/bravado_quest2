@@ -8,10 +8,22 @@
 // layout file, like app/views/layouts/application.html.erb
 
 import Vue from "vue";
+import VueRouter from "vue-router";
 import App from "./App.vue";
+import SearchBox from "./components/SearchBox.vue";
+
+Vue.use(VueRouter);
+
+const routes = [{ path: "/search/:id", component: SearchBox }, { path: "/", component: SearchBox }];
+
+const router = new VueRouter({
+  mode: "history",
+  routes
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   new Vue({
+    router,
     render: h => h(App)
   }).$mount("#app");
 });
