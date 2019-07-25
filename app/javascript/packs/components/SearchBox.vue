@@ -1,7 +1,15 @@
 <template>
   <div class="searchbox">
     <div class="form">
-      <input id="input" v-model="inputValue" class="input" type="text" @input="searchUser" />
+      <input
+        id="input"
+        v-model="inputValue"
+        class="input"
+        type="text"
+        :disabled="isFetching"
+        autofocus="true"
+        @input="searchUser"
+      />
     </div>
     <div
       v-infinite-scroll="addUsersIntoScrollList"
@@ -44,6 +52,7 @@ export default {
   },
   data: function() {
     return {
+      isFetching: false,
       inputValue: this.$route.params.id || "",
       users: [],
       usersLoading: false,
@@ -59,7 +68,9 @@ export default {
     }
   },
   beforeMount() {
+    this.isFetching = true;
     this.getUsers();
+    this.isFetching = false;
   },
   methods: {
     async getUsers() {
