@@ -56,9 +56,9 @@ export default {
       this.isFetchingUsers = true;
       const users = await fetch("/users").then(data => data.json());
       this.isFetchingUsers = false;
-      this.filterUsers(users);
+      this.updateUsers(users);
     },
-    filterUsers(users) {
+    updateUsers(users) {
       if (this.inputValue.trim() === "") {
         this.users = users;
       } else {
