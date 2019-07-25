@@ -6,7 +6,6 @@
         v-model="inputValue"
         class="input"
         type="text"
-        :disabled="isFetching"
         autofocus="true"
         @input="searchUser"
       />
@@ -68,9 +67,7 @@ export default {
     }
   },
   beforeMount() {
-    this.isFetching = true;
     this.getUsers();
-    this.isFetching = false;
   },
   methods: {
     async getUsers() {
