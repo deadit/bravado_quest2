@@ -67,6 +67,7 @@ export default {
       this.page = 0;
       this.lazyList = [];
 
+      this.updateHighlightText();
       this.addUsersIntoScrollList();
     },
     checkUser(user) {
@@ -83,7 +84,6 @@ export default {
       this.lazyList = this.lazyList.concat(append);
       this.page += 1;
       this.busy = false;
-      this.updateHighlightText();
     },
     updateHighlightText() {
       this.highlightText = this.inputValue;
