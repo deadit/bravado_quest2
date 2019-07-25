@@ -13,7 +13,7 @@
     >
       <UserCard
         v-for="(user, indx) of lazyList"
-        :key="indx"
+        :key="`${indx}${user.name}`"
         :user="user"
         :query="inputValue"
       ></UserCard>
@@ -46,21 +46,23 @@ export default {
       return debounce(this.getUsers, 500);
     }
   },
+  beforeMount() {
+    this.getUsers();
+  },
   methods: {
     async getUsers() {
-      this.lazyList = [];
-      this.page = 0;
-
-      if (this.inputValue === "") {
-        this.users = [];
-        return;
-      }
-
       const users = await fetch("/users").then(data => data.json());
       this.filterUsers(users);
     },
     filterUsers(users) {
-      this.users = filter(users, this.checkUser);
+      if (this.inputValue.trim() === "") {
+        this.users = users;
+      } else {
+        this.users = filter(users, this.checkUser);
+      }
+      this.page = 0;
+      this.lazyList = [];
+
       this.addUsersIntoScrollList();
     },
     checkUser(user) {
