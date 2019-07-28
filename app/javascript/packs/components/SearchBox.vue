@@ -1,7 +1,13 @@
 <template>
   <div class="searchbox">
     <div class="form">
-      <input v-model="inputValue" class="input" type="text" autofocus="true" @input="searchUser" />
+      <input
+        v-model="inputValue"
+        class="input"
+        type="text"
+        :disabled="usersLoading === true"
+        @input="searchUser"
+      />
     </div>
     <div
       v-infinite-scroll="addUsersIntoScrollList"
