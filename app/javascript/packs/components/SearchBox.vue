@@ -72,7 +72,21 @@ export default {
       if (this.inputValue.trim() === "") {
         this.filteredUsers = this.users;
       } else {
-        this.filteredUsers = filter(this.users, this.checkUser);
+        const checkUser = user => {
+          return filter(user, userField =>
+            includes(userField.toLowerCase(), this.inputValue.toLowerCase())
+          ).length !== 0
+            ? true
+            : false;
+        };
+
+        const filterUser = user => {
+          const userWithoutAvatar = omit(user, ["avatar"]);
+
+          return checkUser(userWithoutAvatar);
+        };
+
+        this.filteredUsers = filter(this.users, filterUser);
       }
 
       this.page = 0;
@@ -81,16 +95,9 @@ export default {
       this.updateQueryText();
       this.addUsersIntoScrollList();
     },
-    checkUser(user) {
-      const usersWithoutAvatar = omit(user, ["avatar"]);
-      return filter(usersWithoutAvatar, userField =>
-        includes(userField.toLowerCase(), this.inputValue.toLowerCase())
-      ).length !== 0
-        ? true
-        : false;
-    },
     addUsersIntoScrollList() {
       this.busy = true;
+
       const order = 20;
       const currentIndexStart = this.page * order;
       const currentIndexEnd = currentIndexStart + order;
