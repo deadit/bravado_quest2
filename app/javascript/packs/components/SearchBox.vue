@@ -29,9 +29,7 @@
 </template>
 <script>
 import UserCard from "./UserCard.vue";
-import debounce from "lodash/debounce";
-import omit from "lodash/omit";
-import filter from "lodash/filter";
+import { debounce, omit, slice, filter, concat, includes } from "lodash";
 import infiniteScroll from "vue-infinite-scroll";
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 
@@ -44,18 +42,18 @@ export default {
   },
   data: function() {
     return {
-      inputValue: this.$route.params.id || "",
       users: [],
       usersLoading: false,
+      inputValue: this.$route.params.id || "",
+      filteredUsers: [],
       scrollList: [],
       page: 0,
-      order: 20,
       queryText: this.inputValue
     };
   },
   computed: {
     searchUser() {
-      return debounce(this.getUsers, 500);
+      return debounce(this.filterUsers, 500);
     }
   },
   beforeMount() {
@@ -65,15 +63,18 @@ export default {
     async getUsers() {
       this.usersLoading = true;
       const users = await fetch("/users").then(data => data.json());
-      this.updateUsers(users);
+      this.users = users;
       this.usersLoading = false;
+
+      this.filterUsers();
     },
-    updateUsers(users) {
+    filterUsers() {
       if (this.inputValue.trim() === "") {
-        this.users = users;
+        this.filteredUsers = this.users;
       } else {
-        this.users = filter(users, this.checkUser);
+        this.filteredUsers = filter(this.users, this.checkUser);
       }
+
       this.page = 0;
       this.scrollList = [];
 
@@ -81,18 +82,22 @@ export default {
       this.addUsersIntoScrollList();
     },
     checkUser(user) {
-      return filter(omit(user, ["avatar"]), userValue =>
-        userValue.toLowerCase().includes(this.inputValue.toLowerCase())
+      const usersWithoutAvatar = omit(user, ["avatar"]);
+      return filter(usersWithoutAvatar, userField =>
+        includes(userField.toLowerCase(), this.inputValue.toLowerCase())
       ).length !== 0
         ? true
         : false;
     },
     addUsersIntoScrollList() {
-      const order = 20;
       this.busy = true;
-      const append = [...this.users].splice(this.page * order, order);
-      this.scrollList = this.scrollList.concat(append);
+      const order = 20;
+      const currentIndexStart = this.page * order;
+      const currentIndexEnd = currentIndexStart + order;
+      const append = slice(this.filteredUsers, currentIndexStart, currentIndexEnd);
+      this.scrollList = concat(this.scrollList, append);
       this.page += 1;
+
       this.busy = false;
     },
     updateQueryText() {
