@@ -50,7 +50,7 @@ export default {
     return {
       users: [],
       usersLoading: false,
-      inputValue: this.$route.params.id || "",
+      inputValue: this.$route.params.id ?? "",
       filteredUsers: [],
       scrollList: [],
       page: 0,
