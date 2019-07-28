@@ -17,11 +17,11 @@
           v-for="(user, indx) of scrollList"
           :key="`${indx}${user.name}`"
           :user="user"
-          :highlight-text="queryText"
+          :highlight-text="highlightText"
         ></UserCard>
       </template>
       <template v-else>
-        No matches for <b>{{ queryText }}</b> string
+        No matches for <b>{{ highlightText }}</b> string
       </template>
     </div>
     <div class="loader" :class="{ 'd-block': usersLoading }"><PulseLoader></PulseLoader></div>
@@ -48,12 +48,12 @@ export default {
       filteredUsers: [],
       scrollList: [],
       page: 0,
-      queryText: this.inputValue
+      highlightText: this.inputValue
     };
   },
   computed: {
     searchUser() {
-      return debounce(this.filterUsers, 500);
+      return debounce(this.filterUsers, 200);
     }
   },
   beforeMount() {
@@ -92,7 +92,7 @@ export default {
       this.page = 0;
       this.scrollList = [];
 
-      this.updateQueryText();
+      this.updateHighlightText();
       this.addUsersIntoScrollList();
     },
     addUsersIntoScrollList() {
@@ -107,8 +107,8 @@ export default {
 
       this.busy = false;
     },
-    updateQueryText() {
-      this.queryText = this.inputValue;
+    updateHighlightText() {
+      this.highlightText = this.inputValue;
     }
   }
 };
